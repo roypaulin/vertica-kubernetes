@@ -9,7 +9,7 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: 	macos-latest
     steps:
     - uses: actions/checkout@v2
 
@@ -19,10 +19,11 @@ jobs:
         go-version: 1.16
 
     - name: Create k8s Kind Cluster
+      env:
+          VERTICA_CE_URL: "https://vertica-community-edition-for-testing.s3.amazonaws.com/XCz9cp7m/vertica-10.1.1-0.x86_64.RHEL6.rpm"
       run: |
-        sudo scripts/kind.sh init cluster1
-        kubectl cluster-info --context kind-cluster1
-        sudo scripts/setup-int-tests.sh
+        curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
+        sudo scripts/run-k8s-int-tests.sh
 
     - name: Test
       run: echo "done"
