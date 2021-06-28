@@ -113,7 +113,7 @@ function build_and_deploy {
       exit 1
     fi
     echo "Deploy vertica in kind cluster"
-    make  deploy-kind
+    #make  deploy-kind
 }
 
 # Run integration tests and store the pod status in a file
