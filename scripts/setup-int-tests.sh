@@ -27,5 +27,5 @@ set -o errexit
   "$KREW" install krew
 )
 
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+export PATH="${PATH}:${HOME}/.krew/bin"
 kubectl krew install kuttl
