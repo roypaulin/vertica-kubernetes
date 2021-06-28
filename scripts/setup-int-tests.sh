@@ -27,5 +27,5 @@ set -o errexit
   "$KREW" install krew
 )
 
-PATH="${PATH}:${HOME}/.krew/bin"
+PATH="${PATH}:${HOME}/.krew/bin" 
 kubectl krew install kuttl
