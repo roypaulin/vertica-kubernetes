@@ -21,7 +21,7 @@ jobs:
     - name: Create k8s Kind Cluster
       run: |
         sudo scripts/kind.sh init cluster1
-        sudo apt install kubectx
+        kubectl cluster-info --context kind-cluster1
         sudo scripts/setup-int-tests.sh
 
     - name: Test
