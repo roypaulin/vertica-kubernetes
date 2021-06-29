@@ -30,7 +30,7 @@ jobs:
         tar zxvf kubectx_v0.9.3_linux_arm64.tar.gz
         echo $PATH
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
-        sudo run-k8s-int-tests.sh
+        sudo ./run-k8s-int-tests.sh
 
     - name: Test
       run: echo "done"
