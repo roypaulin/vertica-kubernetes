@@ -154,7 +154,7 @@ ifeq ($(KUTTL_PLUGIN_INSTALLED), 0)
 endif
 
 .PHONY: run-int-tests
-run-int-tests: install-kuttl-plugin vdb-gen ## Run the integration tests
+run-int-tests: vdb-gen ## Run the integration tests
 	kubectl kuttl test --report xml
 
 .PHONY: run-soak-tests
