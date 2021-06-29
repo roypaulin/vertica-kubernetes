@@ -25,12 +25,12 @@ jobs:
       env:
           VERTICA_CE_URL: "https://vertica-community-edition-for-testing.s3.amazonaws.com/XCz9cp7m/vertica-10.1.1-0.x86_64.RHEL6.rpm"
       run: |
+        cd scripts
         curl -fsSLO https://github.com/ahmetb/kubectx/releases/download/v0.9.3/kubectx_v0.9.3_linux_arm64.tar.gz
         tar zxvf kubectx_v0.9.3_linux_arm64.tar.gz
         echo $PATH
-        cp kubectx /usr/bin/
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
-        sudo scripts/run-k8s-int-tests.sh
+        sudo run-k8s-int-tests.sh
 
     - name: Test
       run: echo "done"
