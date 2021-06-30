@@ -39,7 +39,7 @@ jobs:
         "$KREW" install krew
         )
         PATH=$PATH:$HOME/.krew/bin
-        make install-kuttl-plugin
+        kubectl krew install kuttl
         
     - name: Kuttl
       run: kubectl kuttl -h
