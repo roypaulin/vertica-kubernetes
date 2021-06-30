@@ -40,6 +40,7 @@ jobs:
         )
         PATH=$PATH:$HOME/.krew/bin
         make install-kuttl-plugin
+        kubectl kuttl -h
 
     - name: Create k8s Kind Cluster
       env:
