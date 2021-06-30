@@ -20,43 +20,33 @@ jobs:
 
     - name: Install docker
       uses: docker-practice/actions-setup-docker@master
-    
-    - name: Install kubectl
-      run: |
-        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        kubectl version --client
-    
-    - name: Install krew plugin
-      env:
-          VERTICA_CE_URL: "https://vertica-community-edition-for-testing.s3.amazonaws.com/XCz9cp7m/vertica-10.1.1-0.x86_64.RHEL6.rpm"
-      run: |
-        (
-        set -x; cd "$(mktemp -d)" &&
-        OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
-        ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
-        curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
-        tar zxvf krew.tar.gz &&
-        KREW=./krew-"${OS}_${ARCH}" &&
-        "$KREW" install krew
-        )
-        export PATH=$PATH:$HOME/.krew/bin
-        kubectl krew install kuttl
-        kubectl kuttl -v
-        curl -fsSLO https://github.com/ahmetb/kubectx/releases/download/v0.9.3/kubectx_v0.9.3_linux_arm64.tar.gz
-        tar zxvf kubectx_v0.9.3_linux_arm64.tar.gz
-        sudo cp kubectx /usr/bin/
-        echo $PATH
-        curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
-        kubectl kuttl -v
        
     - name: kind cluster
       uses: helm/kind-action@v1.2.0
       
     - name: int tests
+      env:
+          VERTICA_CE_URL: "https://vertica-community-edition-for-testing.s3.amazonaws.com/XCz9cp7m/vertica-10.1.1-0.x86_64.RHEL6.rpm"
       run: |
-        make generate manifests install
-        kubectl kuttl test --test create-and-del-crd
-        
+         (
+          set -x; cd "$(mktemp -d)" &&
+          OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
+          tar zxvf krew.tar.gz &&
+          KREW=./krew-"${OS}_${ARCH}" &&
+          "$KREW" install krew
+         )
+          export PATH=$PATH:$HOME/.krew/bin
+          kubectl krew install kuttl
+          kubectl kuttl -v
+          curl -fsSLO https://github.com/ahmetb/kubectx/releases/download/v0.9.3/kubectx_v0.9.3_linux_arm64.tar.gz
+          tar zxvf kubectx_v0.9.3_linux_arm64.tar.gz
+          sudo cp kubectx /usr/bin/
+          echo $PATH
+          curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
+          make generate manifests install
+          kubectl kuttl test --test create-and-del-crd
+
     - name: Test
       run: echo "done"
