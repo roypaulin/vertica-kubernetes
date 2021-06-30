@@ -55,7 +55,8 @@ jobs:
       
     - name: int tests
       run: |
-        kubectl get nodes
+        make generate manifests install
+        kubectl kuttl test --test create-and-del-crd
         
     - name: Test
       run: echo "done"
