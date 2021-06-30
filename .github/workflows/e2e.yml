@@ -49,7 +49,6 @@ jobs:
         echo $PATH
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
         kubectl kuttl -v
-        make generate manifests install
         scripts/run-k8s-int-tests.sh
         
     - name: Test
