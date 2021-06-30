@@ -42,7 +42,8 @@ jobs:
         kubectl krew install kuttl
         
     - name: Kuttl
-      run: kubectl kuttl -h
+      run: |
+        sudo kubectl kuttl -h
       
     - name: Create k8s Kind Cluster
       env:
