@@ -20,7 +20,13 @@ jobs:
 
     - name: Install docker
       uses: docker-practice/actions-setup-docker@master
-      
+    
+    - name: Install kubectl
+      run: |
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        kubectl version --client
+        
     - name: Create k8s Kind Cluster
       env:
           VERTICA_CE_URL: "https://vertica-community-edition-for-testing.s3.amazonaws.com/XCz9cp7m/vertica-10.1.1-0.x86_64.RHEL6.rpm"
@@ -31,7 +37,6 @@ jobs:
         ls /usr/bin/
         echo $PATH
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
-        sudo scripts/run-k8s-int-tests.sh
 
     - name: Test
       run: echo "done"
