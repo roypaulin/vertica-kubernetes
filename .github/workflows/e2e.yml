@@ -30,6 +30,8 @@ jobs:
         kubectl version --client
     
     - name: Install krew plugin
+      env:
+          VERTICA_CE_URL: "https://vertica-community-edition-for-testing.s3.amazonaws.com/XCz9cp7m/vertica-10.1.1-0.x86_64.RHEL6.rpm"
       run: |
         (
         set -x; cd "$(mktemp -d)" &&
@@ -43,23 +45,12 @@ jobs:
         export PATH=$PATH:$HOME/.krew/bin
         kubectl krew install kuttl
         kubectl kuttl -v
-        
-        
-    - name: Kuttl
-      run: |
-        ls $HOME
-        kubectl krew install kuttl
-        kubectl kuttl -v
-      
-    - name: Create k8s Kind Cluster
-      env:
-          VERTICA_CE_URL: "https://vertica-community-edition-for-testing.s3.amazonaws.com/XCz9cp7m/vertica-10.1.1-0.x86_64.RHEL6.rpm"
-      run: |
         curl -fsSLO https://github.com/ahmetb/kubectx/releases/download/v0.9.3/kubectx_v0.9.3_linux_arm64.tar.gz
         tar zxvf kubectx_v0.9.3_linux_arm64.tar.gz
         sudo cp kubectx /usr/bin/
         echo $PATH
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
-
+        kubectl kuttl -v
+        
     - name: Test
       run: echo "done"
