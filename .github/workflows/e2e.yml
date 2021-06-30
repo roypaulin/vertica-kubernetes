@@ -24,10 +24,9 @@ jobs:
     - name: Install kubectl
       run: |
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        mkdir -p ~/.local/bin/kubectl
-        mv ./kubectl ~/.local/bin/kubectl
-        export PATH=$PATH:$HOME/.local/bin
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
         kubectl version --client
+        make generate manifests install
     
     - name: Install krew plugin
       env:
