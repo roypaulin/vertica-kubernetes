@@ -26,7 +26,7 @@ jobs:
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         mkdir -p ~/.local/bin/kubectl
         mv ./kubectl ~/.local/bin/kubectl
-        PATH=$PATH:$HOME/.local/bin
+        export PATH=$PATH:$HOME/.local/bin
         kubectl version --client
     
     - name: Install krew plugin
@@ -40,13 +40,15 @@ jobs:
         KREW=./krew-"${OS}_${ARCH}" &&
         "$KREW" install krew
         )
-        PATH=$PATH:$HOME/.krew/bin
+        export PATH=$PATH:$HOME/.krew/bin
         kubectl krew install kuttl
         kubectl kuttl -v
+        
         
     - name: Kuttl
       run: |
         ls $HOME
+        kubectl krew install kuttl
         kubectl kuttl -v
       
     - name: Create k8s Kind Cluster
