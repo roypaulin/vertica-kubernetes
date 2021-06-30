@@ -42,12 +42,12 @@ jobs:
         )
         PATH=$PATH:$HOME/.krew/bin
         kubectl krew install kuttl
-        ls ~
+        kubectl kuttl -v
         
     - name: Kuttl
       run: |
         ls $HOME
-        kubectl kuttl -h
+        kubectl kuttl -v
       
     - name: Create k8s Kind Cluster
       env:
