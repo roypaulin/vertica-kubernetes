@@ -16,13 +16,11 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.16
+        go-version: 1.16.2
 
     - name: Install docker
       run: |
-        curl -fsSL https://get.docker.com -o get-docker.sh
-        sh get-docker.sh
-        docker run hello-world
+        wget -O - https://gist.githubusercontent.com/fredhsu/f3d927d765727181767b3b13a3a23704/raw/3c2c55f185e23268f7fce399539cb6f1f3c45146/ubuntudocker.sh | bash
         
         
     - name: Install kubectl
