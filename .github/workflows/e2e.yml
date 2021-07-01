@@ -56,9 +56,6 @@ jobs:
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
         kubectl kuttl -v
         cp -p vertica-x86_64.RHEL6.latest.rpm docker-vertica/packages/
-        export VERTICA_IMG=vertica-k8s:$TAG
-        export OPERATOR_IMG=verticadb-operator:$TAG
-        export WEBHOOK_IMG=verticadb-operator:$TAG
         export CLUSTER_NAME=chart-testing
         kubectx kind-chart-testing
         make docker-build vdb-gen
