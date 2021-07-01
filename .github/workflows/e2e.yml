@@ -1,10 +1,6 @@
 name: Go
 
-on:
-  push:
-    branches: [ main ]
-  issue_comment:
-    types: [created, deleted]
+on: issue_comment
 jobs:
 
   build:
