@@ -55,7 +55,6 @@ jobs:
         echo $PATH
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
         kubectl kuttl -v
-        scripts/run-k8s-int-tests.sh
         cp -p vertica-x86_64.RHEL6.latest.rpm docker-vertica/packages/
         make docker-build vdb-gen
         make docker-push
