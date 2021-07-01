@@ -29,10 +29,6 @@ jobs:
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
         kubectl version --client
     
-    
-    - name: Create k8s Kind Cluster
-      uses: helm/kind-action@v1.2.0
-        
     - name: Install krew plugin
       env:
           VERTICA_CE_URL: "https://vertica-community-edition-for-testing.s3.amazonaws.com/XCz9cp7m/vertica-10.1.1-0.x86_64.RHEL6.rpm"
@@ -55,12 +51,7 @@ jobs:
         echo $PATH
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
         kubectl kuttl -v
-        cp -p vertica-x86_64.RHEL6.latest.rpm docker-vertica/packages/
-        export CLUSTER_NAME=chart-testing
-        kubectx kind-chart-testing
-        make docker-build vdb-gen
-        make docker-push
-        kubectl kuttl test --test auto-restart-vertica
+        scripts/run-k8s-int-tests.sh
         
     - name: Test
       run: echo "done"
