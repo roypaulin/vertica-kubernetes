@@ -18,3 +18,4 @@
 
 PVCS=$(kubectl --selector=app.kubernetes.io/name=vertica get pvc | tail -n +2 | awk '{print $1}')
 kubectl delete pvc $PVCS
+
