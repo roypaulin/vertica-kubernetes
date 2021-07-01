@@ -105,7 +105,7 @@ function run_integration_tests {
   make generate manifests install
   make helm-create-resources
   echo "Saving the test status log in $INT_TEST_OUTPUT_DIR/integration_run.log "
-  kubectl kuttl test --test create-and-del-crd
+  kubectl kuttl test --test create-and-del-crd > "$INT_TEST_OUTPUT_DIR"/integration_run.log
 }
 
 trap cleanup EXIT
