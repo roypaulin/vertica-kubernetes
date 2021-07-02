@@ -20,7 +20,9 @@ spec:
     - name: aws
       image: amazon/aws-cli
       command:
-        ["aws", "s3", "mb", "--endpoint", "http://minio", "s3://nimbusdb/db"]
+         - bash
+         - -c
+         - aws s3 rb --endpoint http://minio s3://nimbusdb --force || :; aws s3 mb --endpoint http://minio s3://nimbusdb/db
       env:
         - name: AWS_ACCESS_KEY_ID
           value: minio
