@@ -43,6 +43,7 @@ jobs:
         kubectl krew install kuttl
         kubectl kuttl -v
         curl -fsSLO https://github.com/ahmetb/kubectx/releases/download/v0.9.3/kubectx
+        chmod +x kubectx
         export PATH=$PATH:$HOME/work/vertica-kubernetes/vertica-kubernetes
         echo $HOME
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
