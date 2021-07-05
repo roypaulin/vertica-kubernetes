@@ -48,8 +48,9 @@ jobs:
         echo $HOME
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
         kubectl kuttl -v
-        curl -L https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64 -o /usr/local/bin/stern
-        chmod +x /usr/local/bin/stern
+        sudo curl -L https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64 -o /usr/local/bin/stern
+        sudo chmod +x /usr/local/bin/stern
+        stern
         scripts/run-k8s-int-tests.sh
         
     - uses: actions/upload-artifact@v2
