@@ -22,12 +22,14 @@ spec:
     - name: aws
       image: amazon/aws-cli
       command:
-         ["aws", "s3", "mb", "--endpoint", "http://minio", "s3://nimbusdb/db"]
+         [
+            "bash",
+            "-c",
+            "AWS_EC2_METADATA_DISABLED=true && aws s3 mb --endpoint http://minio s3://nimbusdb/db",
+          ]
       env:
         - name: AWS_ACCESS_KEY_ID
           value: minio
         - name: AWS_SECRET_ACCESS_KEY
           value: minio123
-        - name: AWS_EC2_METADATA_DISABLED
-          value: "'true'"
   restartPolicy: Never
