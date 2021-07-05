@@ -50,5 +50,10 @@ jobs:
         kubectl kuttl -v
         scripts/run-k8s-int-tests.sh
         
+    - uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: $INT_TEST_OUTPUT_DIR/integration_run.log
+        
     - name: Test
       run: echo "done"
