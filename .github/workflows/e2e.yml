@@ -51,7 +51,7 @@ jobs:
         curl -fsSLO https://github.com/stern/stern/releases/download/v1.19.0/stern_1.19.0_linux_amd64.tar.gz 
         tar zxvf stern_1.19.0_linux_amd64.tar.gz
         sudo cp stern_1.19.0_linux_amd64/stern /usr/local/bin/
-        stern
+        stern -h
         scripts/run-k8s-int-tests.sh
         
     - uses: actions/upload-artifact@v2
