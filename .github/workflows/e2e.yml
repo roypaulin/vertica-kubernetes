@@ -45,7 +45,7 @@ jobs:
         curl -fsSLO https://github.com/ahmetb/kubectx/releases/download/v0.9.3/kubectx_v0.9.3_linux_arm64.tar.gz
         tar zxvf kubectx_v0.9.3_linux_arm64.tar.gz
         sudo cp kubectx /usr/bin/
-        echo $PATH
+        echo $HOME
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
         kubectl kuttl -v
         scripts/run-k8s-int-tests.sh
