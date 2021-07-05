@@ -51,9 +51,10 @@ jobs:
         scripts/run-k8s-int-tests.sh
         
     - uses: actions/upload-artifact@v2
+      if: failure()
       with:
         name: my-artifact
-        path: $INT_TEST_OUTPUT_DIR/integration_run.log
+        path: int-tests-output/ancillary.log     
         
     - name: Test
       run: echo "done"
