@@ -27,10 +27,3 @@ spec:
   subclusters:
     - name: defsc
       size: 2
-      resources:
-        limits:
-          memory: 2Gi
-          cpu: 2
-        requests:
-          memory: 1Gi
-          cpu: 2
