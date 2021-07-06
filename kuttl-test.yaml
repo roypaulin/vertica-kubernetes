@@ -16,7 +16,7 @@ kind: TestSuite
 testDirs:
   - tests/e2e
 parallel: 6
-timeout: 720
+timeout: 840
 commands:
   # The tests depend on the minio operator, ensure that it is installed.
   - command: kubectl krew update
