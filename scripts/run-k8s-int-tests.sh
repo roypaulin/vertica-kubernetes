@@ -103,7 +103,7 @@ function build_and_push {
 # Run integration tests and store the pod status in a file
 function run_integration_tests {
   echo "Saving the test status log in $INT_TEST_OUTPUT_DIR/integration_run.log "
-  kubectl kuttl test --skip-delete --test auto-restart-vertica 
+  make run-int-tests
 }
 
 trap cleanup EXIT
