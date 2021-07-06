@@ -15,8 +15,8 @@ apiVersion: kuttl.dev/v1beta1
 kind: TestSuite
 testDirs:
   - tests/e2e
-parallel: 6
-timeout: 600
+parallel: 2
+timeout: 480
 commands:
   # The tests depend on the minio operator, ensure that it is installed.
   - command: kubectl krew update
