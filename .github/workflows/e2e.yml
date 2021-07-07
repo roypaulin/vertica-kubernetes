@@ -27,7 +27,7 @@ jobs:
     
     - name: Install krew plugin
       env:
-          VERTICA_CE_URL: "https://vertica-community-edition-for-testing.s3.amazonaws.com/XCz9cp7m/vertica-10.1.1-0.x86_64.RHEL6.rpm"
+          VERTICA_CE_URL: "http://vdev.verticacorp.com/kits/daily/vertica-x86_64.RHEL6.latest.rpm"
       run: |
         (
         set -x; cd "$(mktemp -d)" &&
