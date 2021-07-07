@@ -57,7 +57,7 @@ jobs:
       if: failure()
       with:
         name: my-artifact
-        path: /home/runner/work/vertica-kubernetes/vertica-kubernetes/
+        path: /home/runner/work/vertica-kubernetes/vertica-kubernetes/*.log
         
     - name: Test
       run: echo "done"
