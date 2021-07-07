@@ -1,7 +1,7 @@
 name: Go
 
 on: 
-  push:
+  pull_request:
     branches: [ main ]
   workflow_dispatch: {}
    
@@ -57,7 +57,7 @@ jobs:
       if: failure()
       with:
         name: my-artifact
-        path: /home/runner/work/vertica-kubernetes/vertica-kubernetes/ancillary.log    
+        path: /home/runner/work/vertica-kubernetes/vertica-kubernetes/
         
     - name: Test
       run: echo "done"
