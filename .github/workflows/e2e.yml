@@ -44,7 +44,6 @@ jobs:
         export PATH=$PATH:$HOME/work/vertica-kubernetes/vertica-kubernetes
         echo $HOME
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
-        kubectl kuttl -v
         curl -fsSLO https://github.com/stern/stern/releases/download/v1.19.0/stern_1.19.0_linux_amd64.tar.gz 
         tar zxvf stern_1.19.0_linux_amd64.tar.gz
         sudo cp stern_1.19.0_linux_amd64/stern /usr/local/bin/
