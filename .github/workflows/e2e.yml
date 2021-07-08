@@ -38,7 +38,7 @@ jobs:
         KREW=./krew-"${OS}_${ARCH}" &&
         "$KREW" install krew
         )
-        export PATH=$PATH:$HOME/.krew/bin
+        echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> $HOME/.bashrc
     
     - name: Install kubectx   
       env:
@@ -47,8 +47,6 @@ jobs:
         curl -fsSLO $KUBECTX_URL
         chmod +x kubectx
         sudo install -o root -g root -m 0755 kubectx /usr/local/bin/kubectx
-        echo $PWD
-        echo $HOME
         
     - name: Install stern and Download vertica RPM package
       env:
@@ -61,7 +59,9 @@ jobs:
         curl $VERTICA_CE_URL -o vertica-x86_64.RHEL6.latest.rpm
       
     - name: Run e2e tests
-      run: scripts/run-k8s-int-tests.sh
+      run: |
+        kubectl krew list
+        scripts/run-k8s-int-tests.sh
         
     - uses: actions/upload-artifact@v2
       if: failure()
