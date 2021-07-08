@@ -46,7 +46,7 @@ jobs:
       run: |
         curl -fsSLO $KUBECTX_URL
         chmod +x kubectx
-        export PATH=$PATH:$HOME/work/vertica-kubernetes/vertica-kubernetes
+        sudo install -o root -g root -m 0755 kubectx /usr/local/bin/kubectx
         echo $PWD
         echo $HOME
         
