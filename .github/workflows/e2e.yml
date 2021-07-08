@@ -42,11 +42,11 @@ jobs:
     
     - name: Install kubectx   
       env:
-          KUBECTX_URL: "https://github.com/ahmetb/kubectx/releases/download/v0.9.3/kubectx"
+          KUBECTX_URL: https://github.com/ahmetb/kubectx/releases/download/v0.9.3/kubectx
       run: |
         curl -fsSLO $KUBECTX_URL
         chmod +x kubectx
-        export PATH=$PATH:$PWD 
+        export PATH=$PATH:$HOME/work/vertica-kubernetes/vertica-kubernetes
         echo $PWD
         echo $HOME
         
