@@ -38,7 +38,7 @@ jobs:
         KREW=./krew-"${OS}_${ARCH}" &&
         "$KREW" install krew
         )
-        echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> $HOME/.bashrc
+        sudo echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> /root/.bashrc
     
     - name: Install kubectx   
       env:
