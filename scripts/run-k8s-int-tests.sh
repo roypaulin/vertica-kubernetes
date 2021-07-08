@@ -81,6 +81,7 @@ function cleanup {
 
 # Copy rpm to the PACKAGES_DIR for the image to be built
 function copy_rpm {
+    kubectl krew -h
     #This expects the rpm in $INT_TEST_OUTPUT_DIR and copies the file to $PACKAGES_DIR
     cp -p "$INT_TEST_OUTPUT_DIR"/"$RPM_FILE" "$PACKAGES_DIR"/"$RPM_FILE"
 }
