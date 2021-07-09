@@ -18,7 +18,7 @@ testDirs:
 parallel: 2
 timeout: 480
 commands:
-  # The tests depend on the minio operator, ensure that it is installed.
+  # The tests depend on the minio operator, ensure that it is installed
   - command: kubectl krew update
   - command: kubectl krew install minio
   - command: kubectl minio init
