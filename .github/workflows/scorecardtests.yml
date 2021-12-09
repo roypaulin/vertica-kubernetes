@@ -1,0 +1,21 @@
+name: Scorecard tests
+
+on: [push, pull_request]
+
+jobs:
+
+  sct:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Download operator-sdk
+      run: make operator-sdk
+
+    - name: Run scorecard tests
+      run: bin/operator-sdk scorecard bundle
