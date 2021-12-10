@@ -9,13 +9,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.17
-
     - name: Download operator-sdk
       run: |
+        mkdir $pwd/bin
         make operator-sdk
 
     - name: Run scorecard tests
