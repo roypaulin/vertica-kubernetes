@@ -12,7 +12,7 @@ jobs:
     - name: Download operator-sdk
       run: |
         mkdir $(pwd)/bin
-        make operator-sdk
+        make bundle
 
     - name: Run scorecard tests
       run: bin/operator-sdk scorecard bundle
