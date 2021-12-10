@@ -11,7 +11,7 @@ jobs:
 
     - name: Download operator-sdk
       run: |
-        ls .
+        mkdir $(pwd)/bin
         make operator-sdk
 
     - name: Run scorecard tests
