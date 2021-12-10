@@ -31,6 +31,7 @@ mv $TEMPLATE_DIR/verticadbs.vertica.com-crd.yaml $OPERATOR_CHART/crds
 # Add in the templating
 # 1. Template the namespace
 sed -i 's/verticadb-operator-system/{{ .Release.Namespace }}/g' $TEMPLATE_DIR/*
+sed -i 's/openshift-system/{{ .Release.Namespace }}/g' $TEMPLATE_DIR/*
 sed -i 's/verticadb-operator-.*-webhook-configuration/{{ .Release.Namespace }}-&/' $TEMPLATE_DIR/*
 # 2. Template the image name
 sed -i "s/image: controller/image: '{{ .Values.image.name }}'/" $TEMPLATE_DIR/verticadb-operator-controller-manager-deployment.yaml

@@ -1,7 +1,8 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: openshift-cluster-role
+  name: cluster-role
+  namespace: openshift-system
 rules:
 - apiGroups:
   - security.openshift.io
