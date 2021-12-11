@@ -2,7 +2,6 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: cluster-rolebinding
-  namespace: openshift-system
 subjects:
 - kind: ServiceAccount
   name: controller-manager
