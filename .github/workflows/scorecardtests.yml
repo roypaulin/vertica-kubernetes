@@ -11,6 +11,12 @@ jobs:
         
     - name: Set up e2e environment
       uses: ./.github/actions/setup-e2e
+    
+    - name: Create kind cluster
+      run: |
+        echo "Setting up kind cluster named vertica"
+        scripts/kind.sh  init vertica
+        kubectx kind-vertica
         
     - name: Download operator-sdk
       run: |
