@@ -1,0 +1,25 @@
+name: Scorecard tests
+
+on: [push, pull_request]
+
+jobs:
+
+  sct:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+        
+    - name: Set up e2e environment
+      uses: ./.github/actions/setup
+    
+    - name: Create kind cluster
+      run: |
+        echo "Setting up kind cluster named vertica"
+        scripts/kind.sh  init vertica
+        kubectx kind-vertica
+        
+    - name: Download operator-sdk
+      run: |
+        make bundle
+    - name: Run scorecard tests
+      run: bin/operator-sdk scorecard bundle
