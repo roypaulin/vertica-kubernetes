@@ -19,4 +19,4 @@ spec:
   annotations:
     TZ: CET
     vertica.com/git-ref: 1fab313k
-
+ 
