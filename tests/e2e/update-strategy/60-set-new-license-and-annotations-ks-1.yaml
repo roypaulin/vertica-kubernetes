@@ -18,5 +18,5 @@ metadata:
 spec:
   annotations:
     TZ: CET
-    vertica.com/git-ref: 1fab313k
+    vertica.com/git-ref: 1fab313k 
  
