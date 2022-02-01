@@ -11,10 +11,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: vertica.com/v1beta1
-kind: VerticaDB
+apiVersion: v1
+kind: Pod
 metadata:
-  name: v-ks-1-update-strategy
-spec:
-  licenseSecret: ce-license
-
+  name: verticadb-sample-defaultsubcluster-0
+status:
+  phase: Running
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: verticadb-sample-defaultsubcluster-1
+status:
+  phase: Running
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: verticadb-sample-defaultsubcluster-2
+status:
+  phase: Running
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: verticadb-sample-defaultsubcluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: verticadb-sample
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: verticadb-sample-defaultsubcluster
+status:
+  currentReplicas: 3
