@@ -17,5 +17,5 @@ metadata:
   name: v-set-env-vars
 spec:
   annotations:
-    TZ: CET
+    # TZ: CET
     vertica.com/git-ref: 1fab313k
