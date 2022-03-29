@@ -53,7 +53,7 @@ endif
 GOLANGCI_LINT_VER=1.41.1
 LOGDIR?=$(shell pwd)
 
-# Command we run to see if we are running in a kind environment
+# Command we run to see if we are running in a kind env
 KIND_CHECK:=kubectl get node -o=jsonpath='{.items[0].spec.providerID}' 2> /dev/null | grep 'kind://' -c
 
 # We pick an image tag based on the environment we are in.  We special case kind
