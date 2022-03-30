@@ -3,6 +3,7 @@
 # It should be run by config/default
 resources:
   - bases/vertica.com_verticadbs.yaml
+  - bases/vertica.com_verticaarchives.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:
