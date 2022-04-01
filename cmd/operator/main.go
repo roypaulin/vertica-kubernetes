@@ -13,7 +13,6 @@
  limitations under the License.
 */
 
-// nolint:funlen
 package main
 
 import (
@@ -37,8 +36,10 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
+	"k8s.io/client-go/rest"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 
 	verticacomv1beta1 "github.com/vertica/vertica-kubernetes/api/v1beta1"
 	"github.com/vertica/vertica-kubernetes/pkg/builder"
@@ -222,6 +223,30 @@ func getLogger(logArgs Logging) *zap.Logger {
 	return zap.New(core, opts...)
 }
 
+// BuildVerticaDBReconciler creates a VerticaDBReconciler struct
+// that will be used to set up the controller with the Manager
+func BuildVerticaDBReconciler(mgr manager.Manager, restCfg *rest.Config, saName string) *controllers.VerticaDBReconciler {
+	return &controllers.VerticaDBReconciler{
+		Client:             mgr.GetClient(),
+		Log:                ctrl.Log.WithName("controllers").WithName("VerticaDB"),
+		Scheme:             mgr.GetScheme(),
+		Cfg:                restCfg,
+		EVRec:              mgr.GetEventRecorderFor(builder.OperatorName),
+		ServiceAccountName: saName,
+	}
+}
+
+// BuidVerticaArchiveReconciler creates a VerticaArchiveReconciler struct
+// that will be used to set up the controller with the Manager
+func BuidVerticaArchiveReconciler(mgr manager.Manager) *controllers.VerticaArchiveReconciler {
+	return &controllers.VerticaArchiveReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
+		Log:    ctrl.Log.WithName("controllers").WithName("VerticaArchive"),
+	}
+}
+
 func main() {
 	flagArgs := &FlagConfig{}
 	flagArgs.setFlagArgs()
@@ -273,14 +298,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.VerticaDBReconciler{
-		Client:             mgr.GetClient(),
-		Log:                ctrl.Log.WithName("controllers").WithName("VerticaDB"),
-		Scheme:             mgr.GetScheme(),
-		Cfg:                restCfg,
-		EVRec:              mgr.GetEventRecorderFor(builder.OperatorName),
-		ServiceAccountName: saName,
-	}).SetupWithManager(mgr); err != nil {
+	if err = BuildVerticaDBReconciler(mgr, restCfg, saName).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VerticaDB")
 		os.Exit(1)
 	}
@@ -302,12 +320,7 @@ func main() {
 		//+kubebuilder:scaffold:builder
 	}
 
-	if err = (&controllers.VerticaArchiveReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
-		Log:    ctrl.Log.WithName("controllers").WithName("VerticaArchive"),
-	}).SetupWithManager(mgr); err != nil {
+	if err = BuidVerticaArchiveReconciler(mgr).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VerticaArchive")
 		os.Exit(1)
 	}
