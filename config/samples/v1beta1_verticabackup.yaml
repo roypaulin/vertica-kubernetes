@@ -1,0 +1,7 @@
+apiVersion: vertica.com/v1beta1
+kind: VerticaBackup
+metadata:
+  name: backup-sample
+spec:
+  verticaDBName: sample
+  archive: my-backup

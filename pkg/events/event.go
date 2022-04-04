@@ -66,3 +66,8 @@ const (
 	RebalanceShards                 = "RebalanceShards"
 	DrainNodeRetry                  = "DrainNodeRetry"
 )
+
+const (
+	VerticaDBNotFound      = "VerticaDBNotFound"
+	VerticaArchiveNotFound = "VerticaArchiveNotFound"
+)

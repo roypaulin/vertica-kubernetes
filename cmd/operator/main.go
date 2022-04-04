@@ -44,6 +44,8 @@ import (
 	verticacomv1beta1 "github.com/vertica/vertica-kubernetes/api/v1beta1"
 	"github.com/vertica/vertica-kubernetes/pkg/builder"
 	"github.com/vertica/vertica-kubernetes/pkg/controllers"
+	"github.com/vertica/vertica-kubernetes/pkg/controllers/archive"
+	"github.com/vertica/vertica-kubernetes/pkg/controllers/backup"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -238,12 +240,40 @@ func BuildVerticaDBReconciler(mgr manager.Manager, restCfg *rest.Config, saName 
 
 // BuidVerticaArchiveReconciler creates a VerticaArchiveReconciler struct
 // that will be used to set up the controller with the Manager
-func BuidVerticaArchiveReconciler(mgr manager.Manager) *controllers.VerticaArchiveReconciler {
-	return &controllers.VerticaArchiveReconciler{
+func BuidVerticaArchiveReconciler(mgr manager.Manager) *archive.VerticaArchiveReconciler {
+	return &archive.VerticaArchiveReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
-		Log:    ctrl.Log.WithName("controllers").WithName("VerticaArchive"),
+		Log:    ctrl.Log.WithName("controllers").WithName("archive").WithName("VerticaArchive"),
+	}
+}
+
+// BuidVerticaBackupReconciler creates a VerticaBackupReconciler struct
+// that will be used to set up the controller with the Manager
+func BuidVerticaBackupReconciler(mgr manager.Manager) *backup.VerticaBackupReconciler {
+	return &backup.VerticaBackupReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
+		Log:    ctrl.Log.WithName("controllers").WithName("backup").WithName("VerticaBackup"),
+	}
+}
+
+// SetupControllersWithManager is just a wrapper calling SetupWithManager for each controller
+func SetupControllersWithManager(mgr manager.Manager, restCfg *rest.Config, saName string) {
+	var err error
+	if err = BuildVerticaDBReconciler(mgr, restCfg, saName).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "VerticaDB")
+		os.Exit(1)
+	}
+	if err = BuidVerticaArchiveReconciler(mgr).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "VerticaArchive")
+		os.Exit(1)
+	}
+	if err = BuidVerticaBackupReconciler(mgr).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "VerticaBackup")
+		os.Exit(1)
 	}
 }
 
@@ -298,10 +328,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = BuildVerticaDBReconciler(mgr, restCfg, saName).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "VerticaDB")
-		os.Exit(1)
-	}
+	SetupControllersWithManager(mgr, restCfg, saName)
+	//+kubebuilder:scaffold:builder
 
 	if getIsWebhookEnabled() {
 		// Set the minimum TLS version for the webhook.  By default it will use
@@ -317,12 +345,6 @@ func main() {
 			setupLog.Error(err, "unable to create webhook", "webhook", "VerticaDB")
 			os.Exit(1)
 		}
-		//+kubebuilder:scaffold:builder
-	}
-
-	if err = BuidVerticaArchiveReconciler(mgr).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "VerticaArchive")
-		os.Exit(1)
 	}
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {

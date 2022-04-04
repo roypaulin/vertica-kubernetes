@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package controllers
+package archive
 
 import (
 	"context"
@@ -19,6 +19,7 @@ import (
 
 	"github.com/go-logr/logr"
 	vapi "github.com/vertica/vertica-kubernetes/api/v1beta1"
+	"github.com/vertica/vertica-kubernetes/pkg/controllers"
 	verrors "github.com/vertica/vertica-kubernetes/pkg/errors"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -49,8 +50,8 @@ func (r *VerticaArchiveReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	log.Info("starting reconcile of VerticaArchive")
 
 	var res ctrl.Result
-	vas := &vapi.VerticaArchive{}
-	err := r.Get(ctx, req.NamespacedName, vas)
+	varc := &vapi.VerticaArchive{}
+	err := r.Get(ctx, req.NamespacedName, varc)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			log.Info("VerticaArchive resource not found.  Ignoring since object must be deleted")
@@ -60,8 +61,8 @@ func (r *VerticaArchiveReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 		return ctrl.Result{}, err
 	}
 
-	// The actors that will be applied, in sequence, to reconcile a vas.
-	actors := []ReconcileActor{}
+	// The actors that will be applied, in sequence, to reconcile a varc.
+	actors := []controllers.ReconcileActor{}
 
 	// Iterate over each actor
 	for _, act := range actors {
