@@ -45,11 +45,11 @@ func fetchVdbOrVarc(ctx context.Context, vburec *VerticaBackupReconciler,
 		switch v := obj.(type) {
 		case *vapi.VerticaDB:
 			event = events.VerticaDBNotFound
-			objType = "VerticaDB"
+			objType = vapi.VerticaDBKind
 			ownedObjName = vbu.Spec.VerticaDBName
 		case *vapi.VerticaArchive:
 			event = events.VerticaArchiveNotFound
-			objType = "VerticaArchive"
+			objType = vapi.VerticaArchiveKind
 			ownedObjName = vbu.Spec.Archive
 		default:
 			event = events.ObjectNotFound

@@ -15,6 +15,8 @@ package v1beta1
 
 import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+const VerticaArchiveKind = "VerticaArchive"
+
 // VerticaArchiveSpec defines the desired state of VerticaArchive
 type VerticaArchiveSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
