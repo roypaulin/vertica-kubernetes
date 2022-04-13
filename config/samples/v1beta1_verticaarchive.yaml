@@ -1,0 +1,7 @@
+apiVersion: vertica.com/v1beta1
+kind: VerticaArchive
+metadata:
+  name: my-backup
+spec:
+  path: s3://nimbusdb/backup
+  restorePointLimit: 1
