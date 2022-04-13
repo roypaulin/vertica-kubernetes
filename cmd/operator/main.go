@@ -43,10 +43,11 @@ import (
 
 	verticacomv1beta1 "github.com/vertica/vertica-kubernetes/api/v1beta1"
 	"github.com/vertica/vertica-kubernetes/pkg/builder"
-	"github.com/vertica/vertica-kubernetes/pkg/controllers"
 	"github.com/vertica/vertica-kubernetes/pkg/controllers/archive"
 	"github.com/vertica/vertica-kubernetes/pkg/controllers/backup"
 	"github.com/vertica/vertica-kubernetes/pkg/controllers/restore"
+	"github.com/vertica/vertica-kubernetes/pkg/controllers/vas"
+	"github.com/vertica/vertica-kubernetes/pkg/controllers/vdb"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -226,69 +227,81 @@ func getLogger(logArgs Logging) *zap.Logger {
 	return zap.New(core, opts...)
 }
 
-// BuildVerticaDBReconciler creates a VerticaDBReconciler struct
-// that will be used to set up the controller with the Manager
-func BuildVerticaDBReconciler(mgr manager.Manager, restCfg *rest.Config, saName string) *controllers.VerticaDBReconciler {
-	return &controllers.VerticaDBReconciler{
+// addReconcilersToManager will add a controller for each CR that this operator
+// handles.  If any failure occurs, if will exit the program.
+func addReconcilersToManager(mgr manager.Manager, restCfg *rest.Config, flagArgs *FlagConfig) {
+	if err := (&vdb.VerticaDBReconciler{
 		Client:             mgr.GetClient(),
 		Log:                ctrl.Log.WithName("controllers").WithName("VerticaDB"),
 		Scheme:             mgr.GetScheme(),
 		Cfg:                restCfg,
 		EVRec:              mgr.GetEventRecorderFor(builder.OperatorName),
-		ServiceAccountName: saName,
-	}
-}
-
-// BuidVerticaArchiveReconciler creates a VerticaArchiveReconciler struct
-// that will be used to set up the controller with the Manager
-func BuidVerticaArchiveReconciler(mgr manager.Manager) *archive.VerticaArchiveReconciler {
-	return &archive.VerticaArchiveReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
-		Log:    ctrl.Log.WithName("controllers").WithName("archive").WithName("VerticaArchive"),
-	}
-}
-
-// BuidVerticaBackupReconciler creates a VerticaBackupReconciler struct
-// that will be used to set up the controller with the Manager
-func BuidVerticaBackupReconciler(mgr manager.Manager) *backup.VerticaBackupReconciler {
-	return &backup.VerticaBackupReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
-		Log:    ctrl.Log.WithName("controllers").WithName("backup").WithName("VerticaBackup"),
-	}
-}
-
-// BuildVerticaRestoreReconciler creates a VerticaRestoreReconciler struct
-// that will be used to set the controller with the manager
-func BuildVerticaRestoreReconciler(mgr manager.Manager) *restore.VerticaRestoreReconciler {
-	return &restore.VerticaRestoreReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
-		Log:    ctrl.Log.WithName("controllers").WithName("restore").WithName("VerticaRestore"),
-	}
-}
-
-// SetupControllersWithManager is just a wrapper calling SetupWithManager for each controller
-func SetupControllersWithManager(mgr manager.Manager, restCfg *rest.Config, saName string) {
-	var err error
-	if err = BuildVerticaDBReconciler(mgr, restCfg, saName).SetupWithManager(mgr); err != nil {
+		ServiceAccountName: flagArgs.ServiceAccountName,
+	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VerticaDB")
 		os.Exit(1)
 	}
-	if err = BuidVerticaArchiveReconciler(mgr).SetupWithManager(mgr); err != nil {
+
+	if err := (&vas.VerticaAutoscalerReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
+		Log:    ctrl.Log.WithName("controllers").WithName("VerticaAutoscaler"),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "VerticaAutoscaler")
+		os.Exit(1)
+	}
+
+	if err := (&archive.VerticaArchiveReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
+		Log:    ctrl.Log.WithName("controllers").WithName("VerticaArchive"),
+	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VerticaArchive")
 		os.Exit(1)
 	}
-	if err = BuidVerticaBackupReconciler(mgr).SetupWithManager(mgr); err != nil {
+
+	if err := (&backup.VerticaBackupReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
+		Log:    ctrl.Log.WithName("controllers").WithName("VerticaBackup"),
+	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VerticaBackup")
 		os.Exit(1)
 	}
-	if err = BuildVerticaRestoreReconciler(mgr).SetupWithManager(mgr); err != nil {
+
+	if err := (&restore.VerticaRestoreReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
+		Log:    ctrl.Log.WithName("controllers").WithName("VerticaRestore"),
+	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VerticaRestore")
+		os.Exit(1)
+	}
+	//+kubebuilder:scaffold:builder
+}
+
+// addWebhooktsToManager will add any webhooks to the manager.  If any failure
+// occurs, it will exit the program.
+func addWebhooksToManager(mgr manager.Manager) {
+	// Set the minimum TLS version for the webhook.  By default it will use
+	// TLS 1.0, which has a lot of security flaws.  This is a hacky way to
+	// set this and should be removed once there is a supported way.
+	// There are numerous proposals to allow this to be configured from
+	// Manager -- based on most recent activity this one looks promising:
+	// https://github.com/kubernetes-sigs/controller-runtime/issues/852
+	webhookServer := mgr.GetWebhookServer()
+	webhookServer.TLSMinVersion = "1.3"
+
+	if err := (&verticacomv1beta1.VerticaDB{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "VerticaDB")
+		os.Exit(1)
+	}
+	if err := (&verticacomv1beta1.VerticaAutoscaler{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "VerticaAutoscaler")
 		os.Exit(1)
 	}
 }
@@ -298,21 +311,14 @@ func main() {
 	flagArgs.setFlagArgs()
 	flag.Parse()
 
-	metricsAddr := flagArgs.MetricsAddr
-	enableLeaderElection := flagArgs.EnableLeaderElection
-	probeAddr := flagArgs.ProbeAddr
-	enableProfiler := flagArgs.EnableProfiler
-	saName := flagArgs.ServiceAccountName
-	logArgs := flagArgs.LogArgs
-
-	logger := getLogger(*logArgs)
-	if logArgs.FilePath != "" {
-		log.Println(fmt.Sprintf("Now logging in file %s", logArgs.FilePath))
+	logger := getLogger(*flagArgs.LogArgs)
+	if flagArgs.LogArgs.FilePath != "" {
+		log.Println(fmt.Sprintf("Now logging in file %s", flagArgs.LogArgs.FilePath))
 	}
 
 	ctrl.SetLogger(zapr.NewLogger(logger))
 
-	if enableProfiler {
+	if flagArgs.EnableProfiler {
 		go func() {
 			addr := "localhost:6060"
 			setupLog.Info("Opening profiling port", "addr", addr)
@@ -332,10 +338,10 @@ func main() {
 
 	mgr, err := ctrl.NewManager(restCfg, ctrl.Options{
 		Scheme:                 scheme,
-		MetricsBindAddress:     metricsAddr,
+		MetricsBindAddress:     flagArgs.MetricsAddr,
 		Port:                   9443,
-		HealthProbeBindAddress: probeAddr,
-		LeaderElection:         enableLeaderElection,
+		HealthProbeBindAddress: flagArgs.ProbeAddr,
+		LeaderElection:         flagArgs.EnableLeaderElection,
 		LeaderElectionID:       "5c1e6227.vertica.com",
 		Namespace:              watchNamespace,
 	})
@@ -344,23 +350,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	SetupControllersWithManager(mgr, restCfg, saName)
-	//+kubebuilder:scaffold:builder
-
+	addReconcilersToManager(mgr, restCfg, flagArgs)
 	if getIsWebhookEnabled() {
-		// Set the minimum TLS version for the webhook.  By default it will use
-		// TLS 1.0, which has a lot of security flaws.  This is a hacky way to
-		// set this and should be removed once there is a supported way.
-		// There are numerous proposals to allow this to be configured from
-		// Manager -- based on most recent activity this one looks promising:
-		// https://github.com/kubernetes-sigs/controller-runtime/issues/852
-		webhookServer := mgr.GetWebhookServer()
-		webhookServer.TLSMinVersion = "1.3"
-
-		if err = (&verticacomv1beta1.VerticaDB{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "VerticaDB")
-			os.Exit(1)
-		}
+		addWebhooksToManager(mgr)
 	}
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
