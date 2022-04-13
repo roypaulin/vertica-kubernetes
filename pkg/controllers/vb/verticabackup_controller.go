@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package backup
+package vb
 
 import (
 	"context"
@@ -52,8 +52,8 @@ func (r *VerticaBackupReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	log.Info("starting reconcile of VerticaBackup")
 
 	var res ctrl.Result
-	vbu := &vapi.VerticaBackup{}
-	err := r.Get(ctx, req.NamespacedName, vbu)
+	vb := &vapi.VerticaBackup{}
+	err := r.Get(ctx, req.NamespacedName, vb)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			log.Info("VerticaBackup resource not found.  Ignoring since object must be deleted")
@@ -65,8 +65,8 @@ func (r *VerticaBackupReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	// The actors that will be applied, in sequence, to reconcile a vbu.
 	actors := []controllers.ReconcileActor{
-		MakeVDBVerifyReconciler(r, vbu),
-		MakeVARCVerifyReconciler(r, vbu),
+		MakeVDBVerifyReconciler(r, vb),
+		MakeVAVerifyReconciler(r, vb),
 	}
 
 	// Iterate over each actor

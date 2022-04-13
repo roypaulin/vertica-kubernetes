@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package archive
+package va
 
 import (
 	"context"
@@ -50,8 +50,8 @@ func (r *VerticaArchiveReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	log.Info("starting reconcile of VerticaArchive")
 
 	var res ctrl.Result
-	varc := &vapi.VerticaArchive{}
-	err := r.Get(ctx, req.NamespacedName, varc)
+	va := &vapi.VerticaArchive{}
+	err := r.Get(ctx, req.NamespacedName, va)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			log.Info("VerticaArchive resource not found.  Ignoring since object must be deleted")

@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package restore
+package vr
 
 import (
 	"context"
@@ -64,7 +64,10 @@ func (r *VerticaRestoreReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	}
 
 	// The actors that will be applied, in sequence, to reconcile a vr.
-	actors := []controllers.ReconcileActor{}
+	actors := []controllers.ReconcileActor{
+		MakeVDBVerifyReconciler(r, vr),
+		MakeVAVerifyReconciler(r, vr),
+	}
 
 	// Iterate over each actor
 	for _, act := range actors {

@@ -12,7 +12,7 @@
 */
 
 //nolint:dupl
-package backup
+package vb
 
 import (
 	"context"
@@ -22,21 +22,21 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-// VARCVerifyReconciler will verify the VerticaArchive in the VBU CR exists
-type VARCVerifyReconciler struct {
+// VAVerifyReconciler will verify the VerticaArchive in the VBU CR exists
+type VAVerifyReconciler struct {
 	VBURec *VerticaBackupReconciler
 	Vbu    *vapi.VerticaBackup
 	Varc   *vapi.VerticaArchive
 }
 
-func MakeVARCVerifyReconciler(r *VerticaBackupReconciler, vbu *vapi.VerticaBackup) controllers.ReconcileActor {
-	return &VARCVerifyReconciler{VBURec: r, Vbu: vbu, Varc: &vapi.VerticaArchive{}}
+func MakeVAVerifyReconciler(r *VerticaBackupReconciler, vbu *vapi.VerticaBackup) controllers.ReconcileActor {
+	return &VAVerifyReconciler{VBURec: r, Vbu: vbu, Varc: &vapi.VerticaArchive{}}
 }
 
 // Reconcile will verify the VerticaArchive in the VBU CR exists
-func (s *VARCVerifyReconciler) Reconcile(ctx context.Context, req *ctrl.Request) (ctrl.Result, error) {
-	varcNm := getNamespacedName(s.Vbu.Namespace, s.Vbu.Spec.Archive)
+func (s *VAVerifyReconciler) Reconcile(ctx context.Context, req *ctrl.Request) (ctrl.Result, error) {
+	varcNm := controllers.GetNamespacedName(s.Vbu.Namespace, s.Vbu.Spec.Archive)
 	// This reconciler is to get afeedback if the VerticaArchive that is referenced in the vbu doesn't exist.
-	// This will print out an event if the VerticaDB cannot be found.
-	return fetchVdbOrVarc(ctx, s.VBURec, s.Vbu, varcNm, s.Varc)
+	// This will print out an event if the VerticaArchive cannot be found.
+	return fetchVdbOrVa(ctx, s.VBURec, s.Vbu, varcNm, s.Varc)
 }

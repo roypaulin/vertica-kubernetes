@@ -43,7 +43,7 @@ type VerticaArchiveStatus struct {
 }
 
 //+kubebuilder:object:root=true
-//+kubebuilder:resource:categories=all;vertica,shortName=varc
+//+kubebuilder:resource:categories=all;vertica,shortName=va
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 //+kubebuilder:printcolumn:name="Backup Count",type="integer",JSONPath=".status.backupCount"

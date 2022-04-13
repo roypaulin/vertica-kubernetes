@@ -65,14 +65,17 @@ type VerticaRestoreSpec struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=spec
 	// Specifies how to handle objects of the same name when restoring schema or table backups.
 	// Valid values are one of the following:
-	//	- createOrReplace: creates any objects that do not exist. If an object does exist, restore overwrites it with the version from the archive.
-	//	- create: creates any objects that do not exist and does not replace existing objects. If an object being restored does exist, the restore fails.
+	//	- createOrReplace: creates any objects that do not exist. If an object does exist,
+	//		restore overwrites it with the version from the archive.
+	//	- create: creates any objects that do not exist and does not replace existing objects.
+	//	  	If an object being restored does exist, the restore fails.
 	//	- coexist: vbr creates the restored version of each object with a name formatted as follows:
 	//		backup_timestamp_objectname
 
 	//		This approach allows existing and restored objects to exist simultaneously.
 	//		If the appended information pushes the schema name past the maximum length of 128 characters,
-	//		Vertica truncates the name. You can perform a reverse lookup of the original schema name by querying the system table TRUNCATED_SCHEMATA.
+	//		Vertica truncates the name. You can perform a reverse lookup of the original schema name
+	//		by querying the system table TRUNCATED_SCHEMATA.
 	ObjectRestoreMode string `json:"objectRestoreMode,omitempty"`
 }
 

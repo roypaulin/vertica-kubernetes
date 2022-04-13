@@ -110,7 +110,7 @@ type VerticaBackupStatus struct {
 }
 
 //+kubebuilder:object:root=true
-//+kubebuilder:resource:categories=all;vertica,shortName=vbu
+//+kubebuilder:resource:categories=all;vertica,shortName=vb
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 //+kubebuilder:printcolumn:name="Phase",type="string",JSONPath=".status.phase"

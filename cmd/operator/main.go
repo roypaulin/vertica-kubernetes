@@ -43,11 +43,11 @@ import (
 
 	verticacomv1beta1 "github.com/vertica/vertica-kubernetes/api/v1beta1"
 	"github.com/vertica/vertica-kubernetes/pkg/builder"
-	"github.com/vertica/vertica-kubernetes/pkg/controllers/archive"
-	"github.com/vertica/vertica-kubernetes/pkg/controllers/backup"
-	"github.com/vertica/vertica-kubernetes/pkg/controllers/restore"
+	"github.com/vertica/vertica-kubernetes/pkg/controllers/va"
 	"github.com/vertica/vertica-kubernetes/pkg/controllers/vas"
+	"github.com/vertica/vertica-kubernetes/pkg/controllers/vb"
 	"github.com/vertica/vertica-kubernetes/pkg/controllers/vdb"
+	"github.com/vertica/vertica-kubernetes/pkg/controllers/vr"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -252,7 +252,7 @@ func addReconcilersToManager(mgr manager.Manager, restCfg *rest.Config, flagArgs
 		os.Exit(1)
 	}
 
-	if err := (&archive.VerticaArchiveReconciler{
+	if err := (&va.VerticaArchiveReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
@@ -262,7 +262,7 @@ func addReconcilersToManager(mgr manager.Manager, restCfg *rest.Config, flagArgs
 		os.Exit(1)
 	}
 
-	if err := (&backup.VerticaBackupReconciler{
+	if err := (&vb.VerticaBackupReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
@@ -272,7 +272,7 @@ func addReconcilersToManager(mgr manager.Manager, restCfg *rest.Config, flagArgs
 		os.Exit(1)
 	}
 
-	if err := (&restore.VerticaRestoreReconciler{
+	if err := (&vr.VerticaRestoreReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
@@ -284,7 +284,7 @@ func addReconcilersToManager(mgr manager.Manager, restCfg *rest.Config, flagArgs
 	//+kubebuilder:scaffold:builder
 }
 
-// addWebhooktsToManager will add any webhooks to the manager.  If any failure
+// addWebhooksToManager will add any webhooks to the manager.  If any failure
 // occurs, it will exit the program.
 func addWebhooksToManager(mgr manager.Manager) {
 	// Set the minimum TLS version for the webhook.  By default it will use

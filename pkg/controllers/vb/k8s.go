@@ -13,7 +13,7 @@
  limitations under the License.
 */
 
-package backup
+package vb
 
 import (
 	"context"
@@ -28,14 +28,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func getNamespacedName(namespace, name string) types.NamespacedName {
-	return types.NamespacedName{
-		Namespace: namespace,
-		Name:      name,
-	}
-}
-
-func fetchVdbOrVarc(ctx context.Context, vburec *VerticaBackupReconciler,
+// fetchVdbOrVa will fetch the VerticaDB/VerticaArchive that is referenced in a VerticaBackup.
+// This will log an event if the VerticaDB/VerticaArchive is not found.
+func fetchVdbOrVa(ctx context.Context, vburec *VerticaBackupReconciler,
 	vbu *vapi.VerticaBackup, nm types.NamespacedName, obj client.Object) (ctrl.Result, error) {
 	err := vburec.Client.Get(ctx, nm, obj)
 	if err != nil && errors.IsNotFound(err) {

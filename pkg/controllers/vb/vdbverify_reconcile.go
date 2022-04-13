@@ -12,7 +12,7 @@
 */
 
 //nolint:dupl
-package backup
+package vb
 
 import (
 	"context"
@@ -35,8 +35,8 @@ func MakeVDBVerifyReconciler(r *VerticaBackupReconciler, vbu *vapi.VerticaBackup
 
 // Reconcile will verify the VerticaDB in the VBU CR exists
 func (s *VDBVerifyReconciler) Reconcile(ctx context.Context, req *ctrl.Request) (ctrl.Result, error) {
-	vdbNm := getNamespacedName(s.Vbu.Namespace, s.Vbu.Spec.VerticaDBName)
+	vdbNm := controllers.GetNamespacedName(s.Vbu.Namespace, s.Vbu.Spec.VerticaDBName)
 	// This reconciler is to get a feedback if the VerticaDB that is referenced in the vbu doesn't exist.
 	// This will print out an event if the VerticaDB cannot be found.
-	return fetchVdbOrVarc(ctx, s.VBURec, s.Vbu, vdbNm, s.Vdb)
+	return fetchVdbOrVa(ctx, s.VBURec, s.Vbu, vdbNm, s.Vdb)
 }

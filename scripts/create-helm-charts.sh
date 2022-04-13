@@ -31,6 +31,7 @@ mv $TEMPLATE_DIR/verticadbs.vertica.com-crd.yaml $CRD_DIR
 mv $TEMPLATE_DIR/verticaarchives.vertica.com-crd.yaml $CRD_DIR
 mv $TEMPLATE_DIR/verticabackups.vertica.com-crd.yaml $CRD_DIR
 mv $TEMPLATE_DIR/verticaautoscalers.vertica.com-crd.yaml $CRD_DIR
+mv $TEMPLATE_DIR/verticarestores.vertica.com-crd.yaml $CRD_DIR
 
 # Add in the templating
 # 1. Template the namespace
