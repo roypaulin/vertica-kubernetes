@@ -38,15 +38,15 @@ type VerticaArchiveSpec struct {
 // VerticaArchiveStatus defines the observed state of VerticaArchive
 type VerticaArchiveStatus struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=status
-	// The number of Restore/Backup using the archive.
-	ReferencedCount int `json:"referencedCount"`
+	// The number of backups existing in  the archive.
+	BackupCount int `json:"backupCount"`
 }
 
 //+kubebuilder:object:root=true
-//+kubebuilder:resource:shortName=varc
+//+kubebuilder:resource:categories=all;vertica,shortName=varc
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
-//+kubebuilder:printcolumn:name="Referenced Count",type="integer",JSONPath=".status.referencedCount"
+//+kubebuilder:printcolumn:name="Backup Count",type="integer",JSONPath=".status.backupCount"
 
 // VerticaArchive is the schema for verticaarchives API
 type VerticaArchive struct {

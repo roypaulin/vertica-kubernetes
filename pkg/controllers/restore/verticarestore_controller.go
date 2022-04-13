@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package backup
+package restore
 
 import (
 	"context"
@@ -28,17 +28,17 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-// VerticaBackupReconciler reconciles a VerticaBackup object
-type VerticaBackupReconciler struct {
+// VerticaRestoreReconciler reconciles a VerticaRestore object
+type VerticaRestoreReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 	Log    logr.Logger
 	EVRec  record.EventRecorder
 }
 
-//+kubebuilder:rbac:groups=vertica.com,namespace=WATCH_NAMESPACE,resources=verticabackups,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=vertica.com,namespace=WATCH_NAMESPACE,resources=verticabackups/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=vertica.com,namespace=WATCH_NAMESPACE,resources=verticabackups/finalizers,verbs=update
+//+kubebuilder:rbac:groups=vertica.com,namespace=WATCH_NAMESPACE,resources=verticarestores,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=vertica.com,namespace=WATCH_NAMESPACE,resources=verticarestores/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=vertica.com,namespace=WATCH_NAMESPACE,resources=verticarestores/finalizers,verbs=update
 //+kubebuilder:rbac:groups=vertica.com,namespace=WATCH_NAMESPACE,resources=verticadbs,verbs=get;list;create;update;patch;delete
 //+kubebuilder:rbac:groups=vertica.com,namespace=WATCH_NAMESPACE,resources=verticaarchives,verbs=get;list;create;update;patch;delete
 
@@ -47,27 +47,24 @@ type VerticaBackupReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
-func (r *VerticaBackupReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := r.Log.WithValues("verticabackup", req.NamespacedName)
-	log.Info("starting reconcile of VerticaBackup")
+func (r *VerticaRestoreReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	log := r.Log.WithValues("verticarestore", req.NamespacedName)
+	log.Info("starting reconcile of VerticaRestore")
 
 	var res ctrl.Result
-	vbu := &vapi.VerticaBackup{}
-	err := r.Get(ctx, req.NamespacedName, vbu)
+	vr := &vapi.VerticaRestore{}
+	err := r.Get(ctx, req.NamespacedName, vr)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			log.Info("VerticaBackup resource not found.  Ignoring since object must be deleted")
+			log.Info("VerticaRestore resource not found.  Ignoring since object must be deleted")
 			return ctrl.Result{}, nil
 		}
-		log.Error(err, "failed to get VerticaBackup")
+		log.Error(err, "failed to get VerticaRestore")
 		return ctrl.Result{}, err
 	}
 
-	// The actors that will be applied, in sequence, to reconcile a vbu.
-	actors := []controllers.ReconcileActor{
-		MakeVDBVerifyReconciler(r, vbu),
-		MakeVARCVerifyReconciler(r, vbu),
-	}
+	// The actors that will be applied, in sequence, to reconcile a vr.
+	actors := []controllers.ReconcileActor{}
 
 	// Iterate over each actor
 	for _, act := range actors {
@@ -75,21 +72,21 @@ func (r *VerticaBackupReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		res, err = act.Reconcile(ctx, &req)
 		// Error or a request to requeue will stop the reconciliation.
 		if verrors.IsReconcileAborted(res, err) {
-			log.Info("aborting reconcile of VerticaBackup", "result", res, "err", err)
+			log.Info("aborting reconcile of VerticaRestore", "result", res, "err", err)
 			return res, err
 		}
 	}
 
-	log.Info("ending reconcile of VerticaBackup", "result", res, "err", err)
+	log.Info("ending reconcile of VerticaRestore", "result", res, "err", err)
 	return res, err
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *VerticaBackupReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *VerticaRestoreReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&vapi.VerticaBackup{}).
+		For(&vapi.VerticaRestore{}).
 		// Not a strict ownership, but this is used so that the operator will
-		// reconcile the VerticaBackup for any change in the VerticaDB.
+		// reconcile the VerticaRestore for any change in the VerticaDB.
 		// This ensures the status fields are kept up to date.
 		Owns(&vapi.VerticaDB{}).
 		Owns(&vapi.VerticaArchive{}).

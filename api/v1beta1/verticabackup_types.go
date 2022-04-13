@@ -37,7 +37,7 @@ type VerticaBackupSpec struct {
 
 	// +kubebuilder:validation:Optional
 	// +kubebuilder:default:=true
-	// +operator-sdk:csv:customresourcedefinitions:type=spec,xDescriptors="urn:alm:descriptor:com.tectonic.ui:hidden"
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,xDescriptors="urn:alm:descriptor:com.tectonic.ui:booleanSwitch"
 	// When set to true, the data sent to the backup path will be encrypted.
 	// This is required for certain backup locations.
 	EncryptTransport bool `json:"encryptTransport,omitempty"`
@@ -50,7 +50,7 @@ type VerticaBackupSpec struct {
 
 	// +kubebuilder:validation:Optional
 	// +operator-sdk:csv:customresourcedefinitions:type=spec
-	// List of objects to include in the backup.
+	// List of objects to include in the backup. This is a wildcard.
 	IncludeObjects string `json:"includeObjects,omitempty"`
 
 	// +kubebuilder:validation:Optional
@@ -65,7 +65,7 @@ type VerticaBackupPhase string
 const (
 	// BackupInitialized means that all required resources have been initialized
 	BackupInitialized VerticaBackupPhase = "Initialized"
-	// BackupRunning means that the backup pod has been created and the backup process initiated on the infinispan server.
+	// BackupRunning means that the backup process has initiated.
 	BackupRunning VerticaBackupPhase = "Running"
 	// BackupSucceeded means that the backup process has completed.
 	BackupSucceeded VerticaBackupPhase = "Succeeded"
@@ -73,7 +73,7 @@ const (
 	BackupFailed VerticaBackupPhase = "Failed"
 )
 
-// BackupCondition describes the observed state of a Backup at a certain point.
+// VerticaBackupCondition describes the observed state of a VerticaBackup at a certain point.
 type VerticaBackupCondition struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=status
 	// Type is the type of the condition
@@ -90,12 +90,8 @@ type VerticaBackupCondition struct {
 	LastTransitionTime metav1.Time `json:"lastTransitionTime,omitempty"`
 }
 
-// VerticaBackupStatus defines the observed state of Vertica
+// VerticaBackupStatus defines the observed state of VerticaBackup
 type VerticaBackupStatus struct {
-	// +operator-sdk:csv:customresourcedefinitions:type=status
-	// Status message for the current backup.
-	BackupStatus string `json:"backupStatus,omitempty"`
-
 	// +operator-sdk:csv:customresourcedefinitions:type=status
 	// Reason indicates the reason for any backup related failures.
 	Reason string `json:"reason,omitempty"`
@@ -105,16 +101,16 @@ type VerticaBackupStatus struct {
 	Phase VerticaBackupPhase `json:"phase,omitempty"`
 
 	// +operator-sdk:csv:customresourcedefinitions:type=status
-	// The name of the VerticaArchive to use for this backup
+	// The name of the VerticaArchive used for this backup
 	Archive string `json:"archive,omitempty"`
 
 	// +operator-sdk:csv:customresourcedefinitions:type=status
-	// Conditions for VerticaDB
+	// Conditions for VerticaBackup
 	Conditions []VerticaBackupCondition `json:"conditions,omitempty"`
 }
 
 //+kubebuilder:object:root=true
-//+kubebuilder:resource:categories=all;verticabackups,shortName=vbu
+//+kubebuilder:resource:categories=all;vertica,shortName=vbu
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 //+kubebuilder:printcolumn:name="Phase",type="string",JSONPath=".status.phase"
@@ -132,7 +128,7 @@ type VerticaBackup struct {
 
 //+kubebuilder:object:root=true
 
-// VerticaArchiveList contains a list of VerticaArchive
+// VerticaBackupList contains a list of VerticaBackup
 type VerticaBackupList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

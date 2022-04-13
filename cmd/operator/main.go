@@ -46,6 +46,7 @@ import (
 	"github.com/vertica/vertica-kubernetes/pkg/controllers"
 	"github.com/vertica/vertica-kubernetes/pkg/controllers/archive"
 	"github.com/vertica/vertica-kubernetes/pkg/controllers/backup"
+	"github.com/vertica/vertica-kubernetes/pkg/controllers/restore"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -260,6 +261,17 @@ func BuidVerticaBackupReconciler(mgr manager.Manager) *backup.VerticaBackupRecon
 	}
 }
 
+// BuildVerticaRestoreReconciler creates a VerticaRestoreReconciler struct
+// that will be used to set the controller with the manager
+func BuildVerticaRestoreReconciler(mgr manager.Manager) *restore.VerticaRestoreReconciler {
+	return &restore.VerticaRestoreReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+		EVRec:  mgr.GetEventRecorderFor(builder.OperatorName),
+		Log:    ctrl.Log.WithName("controllers").WithName("restore").WithName("VerticaRestore"),
+	}
+}
+
 // SetupControllersWithManager is just a wrapper calling SetupWithManager for each controller
 func SetupControllersWithManager(mgr manager.Manager, restCfg *rest.Config, saName string) {
 	var err error
@@ -273,6 +285,10 @@ func SetupControllersWithManager(mgr manager.Manager, restCfg *rest.Config, saNa
 	}
 	if err = BuidVerticaBackupReconciler(mgr).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VerticaBackup")
+		os.Exit(1)
+	}
+	if err = BuildVerticaRestoreReconciler(mgr).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "VerticaRestore")
 		os.Exit(1)
 	}
 }
